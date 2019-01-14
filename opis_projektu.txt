@@ -1,0 +1,9 @@
+Projekt: Rozbudowany kalkulator
+Korzystaj¹c z GTK+ 3.0 napiszê kalkulator z interfejsem graficznym,
+dzia³aj¹cy na liczbach rzeczywistych, sygnalizuj¹cy Ÿle wprowadzone wyra¿enie,
+uwzglêdniaj¹cy kolejnoœæ dzia³añ, pozwalaj¹cy korzystaæ  z naiwasów,
+wykonuj¹cy dzia³ania +, -, *, /, ^ 
+oraz obliczaj¹cy wartoœæ funkcji sin(x), cos(x) i tg(x).
+Kalkulator bêdzie wyœwietlany w okienku, obs³ugiwany za pomoc¹ przycisków
+pozwalaj¹cych wprowadziæ b¹dŸ usun¹æ wpisane wyra¿enie, czy te¿ zamkn¹æ kalkulator.
+Kacper Puchalksi 310271
