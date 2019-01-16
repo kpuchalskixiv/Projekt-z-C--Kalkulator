@@ -14,6 +14,9 @@ activate (GtkApplication* app, gpointer user_data)
 
     window = gtk_application_window_new (app);
     gtk_window_set_title (GTK_WINDOW (window), "Window");
+    GtkWidget *entry;
+    entry=gtk_entry_new();
+    gtk_container_add(GTK_CONTAINER(window), entry);
   //  gtk_container_set_border_width(GTK_CONTAINER(window), 60);
     button_box = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL);
     gtk_container_add(GTK_CONTAINER(window), button_box);

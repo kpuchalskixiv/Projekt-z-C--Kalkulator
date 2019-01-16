@@ -4,13 +4,20 @@
 #include<string.h>
 #include<stdlib.h>
 
-
 typedef struct wekto {
     char* data;
     unsigned int length;
     unsigned int capacity;
     char znak;
 } vector;
+int i=0;
+char* napis;
+static void
+dodaj_do_napisu(char a)
+{
+    napis=a;
+    i++;
+}
 static void
 pushback(GtkWidget *widget, gpointer data, vector *wekt)
 {
@@ -35,15 +42,7 @@ pushback(GtkWidget *widget, gpointer data, vector *wekt)
 
     }
 }
-/*char popback(vector *wekt)
-{
-    char p;
-    p=wekt->data[wekt->length-1];
-    printf("last element:%c ", p);
-    free(wekt->data[wekt->length-1]);
-    wekt->length-=1;
-    return p;
-} */
+
 vector *initvect()
 {
     vector *wekt=malloc(sizeof(vector));
@@ -56,14 +55,14 @@ vector *initvect()
 static void print_string(GtkWidget *widget, gpointer data)
 {
     int j;
-    g_print("==");
-   // for(j=0; j<i; j++)
-      //  g_print("%c", wyr[j]);
+    g_print("", napis);
+  //  for(j=0; j<i; j++)
+   //     g_print("%c", napis[j]);
 }
 static void
 print_hello (GtkWidget *widget, gpointer data)
 {
-  g_print ("Hello World\n");
+  g_print ("hello");
 }
 
 
@@ -76,16 +75,21 @@ activate (GtkApplication* app, gpointer user_data)
     GtkWidget *button;
 
     window = gtk_application_window_new (app);
-    gtk_window_set_title (GTK_WINDOW (window), "Window");
+    gtk_window_set_title (GTK_WINDOW (window), "Kalkulator");
     gtk_container_set_border_width(GTK_CONTAINER(window), 50);
     /* Here we construct the container that is going pack our buttons */
     grid = gtk_grid_new ();
     gtk_container_add(GTK_CONTAINER(window), grid);
 
+   // GtkWidget *entry=gtk_entry_new();
+    const gchar *str="abcd";
+    GtkWidget *entry=gtk_label_new (str);
+    gtk_grid_attach(GTK_GRID(grid), entry, 0, 0, 4, 1);
+
     button=gtk_button_new_with_label("1");
-    wektor->znak='a';
-    g_signal_connect(button, "clicked", G_CALLBACK(pushback), wektor);
-    gtk_grid_attach(GTK_GRID(grid), button, 0, 0, 2, 1);
+    wektor->znak="a";
+    g_signal_connect(button, "clicked", G_CALLBACK(dodaj_do_napisu), "1");
+    gtk_grid_attach(GTK_GRID(grid), button, 0, 1, 1, 1);
 /*
     button=gtk_button_new_with_label("2");
     wektor_ichar->znak='2';
@@ -159,11 +163,11 @@ activate (GtkApplication* app, gpointer user_data)
 */
     button=gtk_button_new_with_label("=");
     g_signal_connect(button, "clicked", G_CALLBACK(print_string), NULL);
-    gtk_grid_attach(GTK_GRID(grid), button, 2, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), button, 2, 1, 1, 1);
 
     button = gtk_button_new_with_label ("Quit");
     g_signal_connect_swapped (button, "clicked", G_CALLBACK (gtk_widget_destroy), window);
-    gtk_grid_attach (GTK_GRID (grid), button, 3, 0, 1, 1);
+    gtk_grid_attach (GTK_GRID (grid), button, 3, 1, 1, 1);
     gtk_widget_show_all(window);
 }
 int main(int argc, char **argv)
