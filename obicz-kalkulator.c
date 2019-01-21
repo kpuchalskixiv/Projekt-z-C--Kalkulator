@@ -20,19 +20,25 @@ void initstack()
 {
     stos_operatorow=NULL;
     stos_operatorow=malloc(sizeof(el_listy));
-    stos_operatorow->value='a';
+    stos_operatorow->value='#';
     stos_operatorow->next=NULL;
 }
 
 int precedence(char op)
 {
-    if(op=='^')
-        return 4;
-    if(op=='*' || op=='/')
-        return 3;
-    if(op=='a')
-        return 1;
-    return 2;
+    if(op>='a' && op<='z')
+        return 5;
+    else
+        if(op=='^')
+            return 4;
+        else
+            if(op=='*' || op=='/')
+                return 3;
+            else
+                if(op=='#')
+                    return 1;
+                else
+                    return 2;
 }
 
 char popback_stack(el_listy *head)
@@ -142,7 +148,8 @@ int zamien_na_ONP(vector *wyrazenie_w_ONP, char *expression)
     int i, a=strlen(expression);
     for(i=0; i<a; i++)
     {
-    if(expression[i]!=' '){
+        print_stack(stos_operatorow);
+        printf("%d\n", i);
       //  printf("%d ", i);
         while(i<a && ((expression[i]>='0' && expression[i]<='9')
                       || expression[i]==',')){
@@ -151,47 +158,54 @@ int zamien_na_ONP(vector *wyrazenie_w_ONP, char *expression)
             pushback(wyrazenie_w_ONP, expression[i]);
             i++;
         }
+       /* if(wyrazenie_w_ONP->length>0){
         if(wyrazenie_w_ONP->data[wyrazenie_w_ONP->length-1]>='0'
         && wyrazenie_w_ONP->data[wyrazenie_w_ONP->length-1]<='9')
-            pushback(wyrazenie_w_ONP, '_');
-        if(expression[i]!=' ')
+            pushback(wyrazenie_w_ONP, '_'); } */
+
+        if(expression[i]>='a' && expression[i]<='z')
         {
-            if(stos_operatorow->next==NULL || expression[i]=='(')
-                pushback_stack(stos_operatorow, expression[i]);
+            pushback_stack(stos_operatorow, expression[i]);
+            while(i<a && expression[i]>='a' && expression[i]<='z')
+                i++;
+        }
+        if(expression[i]=='(')
+            pushback_stack(stos_operatorow, expression[i]);
+        else
+        {
+            if(expression[i]==')')
+            {
+                char z;
+                while(1)
+                {
+                    z=popback_stack(stos_operatorow);
+                    if(z=='(')
+                        break;
+                    if(z=='#')
+                    {
+                        printf("zle wpisane wyrazenie");
+                        return 0;
+                    }
+                    pushback(wyrazenie_w_ONP, z);
+                }
+                // z=popback(stos_operatorow);
+            }
             else
             {
-                if(expression[i]==')')
+                char z;
+                while((precedence(top_stack(stos_operatorow))==5
+                    || precedence(expression[i])<precedence(top_stack(stos_operatorow))
+                    || (precedence(expression[i])==precedence(top_stack(stos_operatorow))
+                        && expression[i]!='^'))
+                    && top_stack(stos_operatorow)!='(')
                 {
-                    char z;
-                    while(1)
-                    {
-                        z=popback_stack(stos_operatorow);
-                        if(z=='(')
-                            break;
-                        if(z=='a')
-                        {
-                            printf("zle wpisane wyrazenie");
-                            return 0;
-                        }
-                        pushback(wyrazenie_w_ONP, z);
-                    }
-                   // z=popback(stos_operatorow);
+                    z=popback_stack(stos_operatorow);
+                    pushback(wyrazenie_w_ONP, z);
                 }
-                else
-                {
-                    char z;
-                    while(precedence(expression[i])<=precedence(top_stack(stos_operatorow))
-                          && !(expression[i]=='^' && top_stack(stos_operatorow)=='^')
-                          && top_stack(stos_operatorow)!='(')
-                    {
-                        z=popback_stack(stos_operatorow);
-                        pushback(wyrazenie_w_ONP, z);
-                    }
-                    pushback_stack(stos_operatorow, expression[i]);
-                }
+                pushback_stack(stos_operatorow, expression[i]);
             }
         }
-    }}
+    }
   /*  printf("%c\n", top_stack(stos_operatorow));
     int k;
     pushback(wyrazenie_w_ONP, popback_stack(stos_operatorow));
@@ -200,14 +214,14 @@ int zamien_na_ONP(vector *wyrazenie_w_ONP, char *expression)
     printf("\n");
     print_stack(stos_operatorow);
     char z; */
-    while(top_stack(stos_operatorow)!='a')
+    while(top_stack(stos_operatorow)!='#')
         pushback(wyrazenie_w_ONP, popback_stack(stos_operatorow));
     return 1;
 }
 int main()
 {
     double wynik;
-    char *wyrazenie="3,25+4*2/(1-5)^2^3";
+    char *wyrazenie="sin(3+4*2/cos(1-5)^2^3)";
     vector *ONP=initvect();
     if(zamien_na_ONP(ONP, wyrazenie)){
     int j;
