@@ -40,7 +40,7 @@ activate (GtkApplication* app, gpointer user_data)
 
     button = gtk_button_new_with_label ("Hello World");
   //  g_signal_connect (button, "clicked", (GCallback)wejscie, (entry, wyr));
-    g_signal_connect_swapped (button, "clicked", G_CALLBACK (gtk_editable_insert_text), (GTK_EDITABLE(entry), str, -1, &position));
+    g_signal_connect_swapped (button, "clicked", G_CALLBACK (gtk_editable_insert_text), (GTK_IS_EDITABLE(entry), str, -1, &position));
   //  g_signal_connect_swapped (button, "clicked", G_CALLBACK (gtk_widget_destroy), window);
     gtk_grid_attach(GTK_GRID(grid), button, 0, 1, 2, 1);
 
