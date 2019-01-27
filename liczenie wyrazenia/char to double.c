@@ -83,6 +83,10 @@ double licz(char z)
             if(z=='c') return cos(a);
             else{
                 if(z=='t') return tan(a);
+                else{
+                    if(z=='l') return log(a);
+                }
+
             }
         }
     }

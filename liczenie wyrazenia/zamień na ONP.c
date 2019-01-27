@@ -2,11 +2,11 @@
 #include <math.h>
 #include<string.h>
 #include<stdlib.h>
-#define Q 1.11111111111
 typedef struct wekto {
     char* data;
     unsigned int length;
     unsigned int capacity;
+    //char znak;
 } vector;
 
 typedef struct element {
@@ -15,21 +15,6 @@ typedef struct element {
 } el_listy;
 
 el_listy *stos_operatorow;
-
-typedef struct stack {
-    double value;
-    struct stack *next;
-}stackss;
-
-stackss *stos_obliczen;
-
-void initstack_calculate()
-{
-    stos_obliczen=NULL;
-    stos_obliczen=malloc(sizeof(stackss));
-    stos_obliczen->value=Q;
-    stos_obliczen->next=NULL;
-}
 
 void initstack()
 {
@@ -93,7 +78,7 @@ char top_stack(el_listy *head)
 
 void pushback_stack(el_listy *head, char value1)
 {
-
+      //  printf("znak: %c jego ASCII: %d\n", value1, value1);
         el_listy *current=head;
         while(current->next!=NULL)
             current=current->next;
@@ -113,9 +98,11 @@ void print_stack( el_listy * first)
         current=current ->next;
     }
 }
-
+//int f=0;
 void pushback(vector *wekt, char znak)
 {
+   // printf("\n(%d: %c ASCII: %d)", f, znak, znak);
+   // f++;
     if(wekt->length==0)
     {
         wekt->data=malloc(sizeof(char));
@@ -142,6 +129,7 @@ char popback(vector *wekt)
 {
     char p;
     p=wekt->data[wekt->length-1];
+   // printf("last element:%d ", p);
     free(wekt->data[wekt->length-1]);
     wekt->length-=1;
     return p;
@@ -153,20 +141,28 @@ vector *initvect()
     wekt->length=0;
     wekt->capacity=0;
     wekt->data=NULL;
+    //wekt->znak=NULL;
     return wekt;
 }
 int zamien_na_ONP(vector *wyrazenie_w_ONP, char *expression)
 {
     initstack();
     int i, a=strlen(expression);
+   // printf("#%d#\n", a);
     for(i=0; i<a; i++)
     {
+      //  print_stack(stos_operatorow);
+     //   printf("%d\n", i);
         while(i<a && ((expression[i]>='0' && expression[i]<='9')
-                      || expression[i]==',')){
+                      || expression[i]=='.')){
+      //  while((expression[i]>='0' && expression[i]<='9') || expression[i]==',' )
 
             pushback(wyrazenie_w_ONP, expression[i]);
             i++;
         }
+
+        if(i==a)
+            break;
 
         if(wyrazenie_w_ONP->length>0){
         if(wyrazenie_w_ONP->data[wyrazenie_w_ONP->length-1]>='0'
@@ -198,6 +194,7 @@ int zamien_na_ONP(vector *wyrazenie_w_ONP, char *expression)
                     }
                     pushback(wyrazenie_w_ONP, z);
                 }
+                // z=popback(stos_operatorow);
             }
             else
             {
@@ -215,148 +212,40 @@ int zamien_na_ONP(vector *wyrazenie_w_ONP, char *expression)
             }
         }
     }
+  /*  printf("%c\n", top_stack(stos_operatorow));
+    int k;
+    pushback(wyrazenie_w_ONP, popback_stack(stos_operatorow));
+    for(k=0; k<wyrazenie_w_ONP->length; k++)
+        printf("%c ", wyrazenie_w_ONP->data[k]);
+    printf("\n");
+    print_stack(stos_operatorow);
+    char z; */
     while(top_stack(stos_operatorow)!='#')
-        pushback(wyrazenie_w_ONP, popback_stack(stos_operatorow));
+    {
+        //if(top_stack(stos_operatorow)!=0)
+            pushback(wyrazenie_w_ONP, popback_stack(stos_operatorow));
+    }
     return 1;
 }
-
-void print_stack_calculate( stackss * first)
-{
-    stackss *current=first;
-    while(current!=NULL)
-    {
-        printf("%f ", current->value);
-        current=current ->next;
-    }
-}
-
-double popback_stack_calculate(stackss *head)
-{
-    if(head->next==NULL)
-        printf("head->NULL");
-    else{
-        stackss *current=head->next;
-        stackss *pom=head;
-        while(current->next!=NULL)
-        {
-            pom=current;
-            current=current->next;
-        }
-        pom->next=NULL;
-        double z=current->value;
-        free(current);
-        return z;
-    }
-}
-
-int stack_size_calculate(stackss *head)
-{
-    if(head->next==NULL)
-        return 0;
-    else{
-        int k=0;
-        stackss *current=head;
-        while(current->next!=NULL)
-        {
-            current=current->next;
-            k++;
-        }
-        return k;
-    }
-}
-
-void pushback_stack_calculate(stackss *head, double value1)
-{
-
-        stackss *current=head;
-        while(current->next!=NULL)
-            current=current->next;
-        current->next=malloc(sizeof(stackss));
-        current=current->next;
-        current->value=value1;
-        current->next=NULL;
-
-}
-double licz(char z)
-{
-    double a, b;
-    if(z=='_')
-        return Q;
-    else{
-    if(z>='a' && z<='z')
-    {
-        a=popback_stack_calculate(stos_obliczen);
-        if(z=='s') return sin(a);
-        else{
-            if(z=='c') return cos(a);
-            else{
-                if(z=='t') return tan(a);
-            }
-        }
-    }
-    else
-    {
-        a=popback_stack_calculate(stos_obliczen);
-        b=popback_stack_calculate(stos_obliczen);
-        if(z=='+') return b+a;
-        if(z=='-') return b-a;
-        if(z=='*') return b*a;
-        if(z=='/') return b/a;
-        if(z=='^') return pow(b, a);
-    }
-    }
-}
-
-double oblicz_onp(vector *wyrazenie_w_ONP)
-{
-    int j, z=0, w, i=0;
-    char l[30];
-    double x;
-    initstack_calculate();
-    char *expression=wyrazenie_w_ONP->data;
-    for(i=0; i<wyrazenie_w_ONP->length; i++){
-        j=0;
-        while(i<wyrazenie_w_ONP->length &&
-            ((expression[i]>='0' && expression[i]<='9')
-            || expression[i]=='.'))
-        {
-            l[j]=expression[i];
-            j++;
-            i++;
-        }
-        if(j>0)
-        {
-            l[j]='\0';
-            x=atof(l);
-            pushback_stack_calculate(stos_obliczen, x);
-        }
-      //  print_stack_calculate(stos_obliczen);
-      //  printf(" i: %d\n", i);
-        if(!j && expression[i]!='_')
-        {
-            double y=licz(expression[i]);
-            if(y!=Q)
-                pushback_stack_calculate(stos_obliczen, y);
-        }
-    }
-    //if(stack_size_calculate(stos_obliczen)==1)
-      //  printf("%f", popback_stack_calculate(stos_obliczen));
-    return popback_stack_calculate(stos_obliczen);
-}
-
 int main()
 {
     double wynik;
-    int j;
-    char *wyrazenie="1+sin(3+4*2/(1-5)^2^3)";
-    //scanf("%s", &wyrazenie);
+    int i;
+    //char *wyrazenie="1+sin(3+4*2/(1-5)^2^3)";
+    char *wyrazenie="0.9999+1";
+   /* printf("#%d#\n", strlen(wyrazenie));
+    for(i=0; i<strlen(wyrazenie); i++)
+        printf("%c*%d ", wyrazenie[i], wyrazenie[i]);
+    printf("\n"); */
     vector *ONP=initvect();
     if(zamien_na_ONP(ONP, wyrazenie))
     {
-       // for(j=0; j<ONP->length; j++)
-       //     printf("%c", ONP->data[j]);
-        wynik=oblicz_onp(ONP);
-        printf("wynik: %f", wynik);
+        int j;
+        for(j=0; j<ONP->length; j++)
+            printf("%c", ONP->data[j], ONP->data[j]);
+        //printf("dlugosc wyrazenia: %d\n", ONP->length);
     }
-    return 0;
+   // printf("%d", ONP->length);
+   //  c[3]='e';
+    //printf("%c", c[0]);
 }

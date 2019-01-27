@@ -52,7 +52,7 @@ activate (GtkApplication* app, gpointer user_data)
     g_signal_connect(button, "clicked", G_CALLBACK(addtostring), '2');
     gtk_grid_attach(GTK_GRID(grid), button, 1, 0, 1, 1);
 
-    button=gtk_button_new_with_label("3");
+    /*button=gtk_button_new_with_label("3");
     g_signal_connect(button, "clicked", G_CALLBACK(addtostring), '3');
     gtk_grid_attach(GTK_GRID(grid), button, 2, 0, 1, 1);
 
@@ -106,7 +106,7 @@ activate (GtkApplication* app, gpointer user_data)
 
     button=gtk_button_new_with_label("=");
     g_signal_connect(button, "clicked", G_CALLBACK(print_string), NULL);
-    gtk_grid_attach(GTK_GRID(grid), button, 4, 0, 1, 3);
+    gtk_grid_attach(GTK_GRID(grid), button, 4, 0, 1, 3); */
 
     button = gtk_button_new_with_label ("Quit");
     g_signal_connect_swapped (button, "clicked", G_CALLBACK (gtk_widget_destroy), window);
