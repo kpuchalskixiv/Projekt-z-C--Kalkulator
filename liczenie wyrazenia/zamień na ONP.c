@@ -154,7 +154,7 @@ int zamien_na_ONP(vector *wyrazenie_w_ONP, char *expression)
       //  print_stack(stos_operatorow);
      //   printf("%d\n", i);
         while(i<a && ((expression[i]>='0' && expression[i]<='9')
-                      || expression[i]=='.')){
+                      || expression[i]==',')){
       //  while((expression[i]>='0' && expression[i]<='9') || expression[i]==',' )
 
             pushback(wyrazenie_w_ONP, expression[i]);
@@ -227,12 +227,92 @@ int zamien_na_ONP(vector *wyrazenie_w_ONP, char *expression)
     }
     return 1;
 }
+int nawias_po_funkcji(char *expression, int i)
+{
+    if(expression[i]=='l')
+    {
+        if(expression[i+2]!='(')
+            return 1;
+        else
+            return 0;
+    }
+    else
+    {
+        if(expression[i+3]!='(')
+            return 2;
+        else
+            return 0;
+    }
+}
+bool czy_bledne(char *expression)
+{
+    bool bledne=false;
+    int nawiasy=0, przecinek, i, a=strlen(expression)
+    for(i=0; i<a; i++)
+    {
+        if(bledne)
+            break;
+        przecinek=0;
+        while(i<a && ((expression[i]>='0' && expression[i]<='9')
+        || expression[i]==',')){
+            if(expression[i]==',' && przecinek==1)
+            {
+                bledne=true;
+                break;
+            }
+            if(expression[i]==',')
+                przecinek=1;
+            i++;
+        }
+        if(expression[i-1]==',')
+            bledne=true;
+        else{
+            if(expression[i]=='(' && expression[i+1]==')')
+                bledne=true;
+            else{
+                if(expression[i]=='(')
+                {
+                    nawiasy++;
+                    if((expression[i+1]>='*' && expression[i+1]<='/')
+                    || expression[i+1]=='^')
+                        bledne=true;
+                }
+                else{
+                    if(expression[i]==')')  nawiasy--;
+                    else{
+                        if(expression[i]>='a' && expression[i]<='z')
+                        {
+                            int p=nawias_po_funkcji(expression, i);
+                            if(p==0)
+                                bledne=true;
+                            else
+                                i+=p;
+                        }
+                        else{
+                            if((expression[i+1]>=')' && expression[i+1]<='/')
+                            || expression[i+1]=='^')
+                                bledne=true;
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+    if(nawiasy!=0)
+        bledne==true;
+    if(bledne)
+        return true; //tak, b³êdne
+    else
+        return false;
+}
+
 int main()
 {
     double wynik;
     int i;
     //char *wyrazenie="1+sin(3+4*2/(1-5)^2^3)";
-    char *wyrazenie="0.9999+1";
+    char *wyrazenie="0,9999+1";
    /* printf("#%d#\n", strlen(wyrazenie));
     for(i=0; i<strlen(wyrazenie); i++)
         printf("%c*%d ", wyrazenie[i], wyrazenie[i]);
